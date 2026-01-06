@@ -7,32 +7,48 @@
 
 import scrapy
 
-
 class ImmoscoutItem(scrapy.Item):
-    # define the fields for your item here like:
-    #  name = scrapy.Field()
+    # Basic property info
     immo_id = scrapy.Field()
     url = scrapy.Field()
     title = scrapy.Field()
+    full_description = scrapy.Field()
+
+    # Address and location
     address = scrapy.Field()
     city = scrapy.Field()
     zip_code = scrapy.Field()
     district = scrapy.Field()
-    contact_name = scrapy.Field()
-    media_count = scrapy.Field()
     lat = scrapy.Field()
     lng = scrapy.Field()
-    sqm  = scrapy.Field()
+
+    # Travel times
+    time_dest = scrapy.Field()
+    time_dest2 = scrapy.Field()
+    time_dest3 = scrapy.Field()
+
+    # Financials and size
     rent = scrapy.Field()
+    sqm = scrapy.Field()
     rooms = scrapy.Field()
     extra_costs = scrapy.Field()
+
+    # Features
     kitchen = scrapy.Field()
     balcony = scrapy.Field()
     garden = scrapy.Field()
     private = scrapy.Field()
     area = scrapy.Field()
     cellar = scrapy.Field()
-    time_dest = scrapy.Field()  # time to destination using transit or driving
-    time_dest2 = scrapy.Field()
-    time_dest3 = scrapy.Field()
 
+    # Contact and media
+    contact_name = scrapy.Field()
+    media_count = scrapy.Field()
+
+    # LLM Analysis fields
+    llm_analysis = scrapy.Field()
+    llm_rating = scrapy.Field()
+    llm_strengths = scrapy.Field()
+    llm_weaknesses = scrapy.Field()
+    llm_message_points = scrapy.Field()
+    personalized_message = scrapy.Field()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 # Scrapy settings for immospider project
 #
@@ -61,7 +62,8 @@ ROBOTSTXT_OBEY = True
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
 EXTENSIONS = {
-     'immospider.extensions.SendMail': 100,	
+    # 'immospider.extensions.SendMail': 100,
+    'immospider.extensions.SendTelegramMessage': 100,
 #    'scrapy.extensions.telnet.TelnetConsole': None,
 }
 
@@ -70,6 +72,8 @@ EXTENSIONS = {
 ITEM_PIPELINES = {
     'immospider.pipelines.DuplicatesPipeline': 500,
     'immospider.pipelines.GooglemapsPipeline': 300,
+    'immospider.pipelines.LLMAnalysisPipeline': 200,
+    'immospider.pipelines.PersonalizedMessagePipeline': 100,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -92,3 +96,6 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+TELEGRAM_API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")

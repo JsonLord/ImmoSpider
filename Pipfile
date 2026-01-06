@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 jupyter = "*"
 scrapy = "*"
-sklearn = "*"
+scikit-learn = "*"
 pandas = "*"
 scipy = "*"
 matplotlib = "*"
@@ -14,9 +14,12 @@ seaborn = "*"
 tpot = "*"
 googlemaps = "*"
 yacron = "*"
-sendgrid = ">=5.0,<6.0"
+python-telegram-bot = "*"
+fastapi = "*"
+gradio = "*"
+requests = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6.5"
+python_version = "3.12"

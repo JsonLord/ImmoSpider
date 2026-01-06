@@ -9,6 +9,12 @@ import googlemaps
 import datetime
 import shelve
 from scrapy.exceptions import DropItem
+import json
+import os
+import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 # see https://doc.scrapy.org/en/latest/topics/item-pipeline.html#duplicates-filter
 class DuplicatesPipeline(object):
@@ -38,20 +44,12 @@ class GooglemapsPipeline(object):
     def __init__(self, gm_key):
         if gm_key:
             self.gm_client = googlemaps.Client(gm_key)
+        with open("api/config.json", "r") as f:
+            self.config = json.load(f)
 
     def _get_destinations(self, spider):
         destinations = []
-
-        if hasattr(spider, "dest"):
-            mode = getattr(spider, "mode", "driving")
-            destinations.append((spider.dest, mode))
-        if hasattr(spider, "dest2"):
-            mode2 = getattr(spider, "mode2", "driving")
-            destinations.append((spider.dest2, mode2))
-        if hasattr(spider, "dest3"):
-            mode3 = getattr(spider, "mode3", "driving")
-            destinations.append((spider.dest3, mode3))
-
+        destinations.append((self.config['dest'], self.config['mode']))
         return destinations
 
     def _next_monday_eight_oclock(self, now):
@@ -92,4 +90,84 @@ class GooglemapsPipeline(object):
             item["time_dest2"] = travel_times[1] if len(travel_times) > 1 else None
             item["time_dest3"] = travel_times[2] if len(travel_times) > 2 else None
 
+        return item
+
+class LLMAnalysisPipeline(object):
+    def __init__(self):
+        self.api_key = os.getenv("BLABLADOR_API_KEY")
+        self.api_url = "https://api.helmholtz-blablador.fz-juelich.de/v1/chat/completions"
+
+    def process_item(self, item, spider):
+        if not self.api_key:
+            logger.warning("BLABLADOR_API_KEY not found. Skipping LLM analysis.")
+            return item
+
+        prompt = f"""
+        Please analyze the following property description and return a JSON object with the following structure:
+        {{
+            "analysis": "A brief, neutral summary of the property.",
+            "strengths": ["A list of the top 3-5 positive aspects."],
+            "weaknesses": ["A list of the top 3-5 potential problems or negative aspects."],
+            "rating": "A price-to-benefit rating out of 10 (e.g., '7/10').",
+            "message_points": ["A list of specific, individual points from the description that can be used to personalize a message to the owner."]
+        }}
+
+        Property Description:
+        ---
+        {item.get('full_description', 'No description available.')}
+        ---
+        """
+
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
+
+        data = {
+            "model": "alias-large",
+            "messages": [{"role": "user", "content": prompt}],
+            "response_format": {"type": "json_object"}
+        }
+
+        try:
+            response = requests.post(self.api_url, headers=headers, json=data, timeout=120)
+            response.raise_for_status()
+            llm_data = response.json()["choices"][0]["message"]["content"]
+            llm_data = json.loads(llm_data) # The API returns the JSON as a string inside the content field
+
+            item['llm_analysis'] = llm_data.get("analysis", "N/A")
+            item['llm_rating'] = llm_data.get("rating", "N/A")
+            item['llm_strengths'] = llm_data.get("strengths", [])
+            item['llm_weaknesses'] = llm_data.get("weaknesses", [])
+            item['llm_message_points'] = llm_data.get("message_points", [])
+            logger.info(f"LLM analysis complete for item {item['immo_id']}.")
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Failed to get LLM analysis for item {item['immo_id']}: {e}")
+        except (json.JSONDecodeError, KeyError) as e:
+            logger.error(f"Failed to parse LLM response for item {item['immo_id']}: {e}")
+
+        return item
+
+
+class PersonalizedMessagePipeline(object):
+    def __init__(self):
+        with open("api/config.json", "r") as f:
+            self.config = json.load(f)
+
+    def process_item(self, item, spider):
+        contact = item.get('contact_name', 'Sir/Madam')
+        address = item.get('address', 'the property')
+        points = item.get('llm_message_points', [])
+
+        message = f"Dear {contact},\n\n"
+        message += f"I am writing to express my strong interest in the apartment at {address}. "
+
+        if points:
+            message += f"I was particularly interested to read that {points[0].lower()}. "
+
+        message += "I am very keen to arrange a viewing at your earliest convenience.\n\n"
+        message += f"Sincerely,\n{self.config.get('contact_name', 'A Potential Tenant')}"
+
+        item['personalized_message'] = message
         return item

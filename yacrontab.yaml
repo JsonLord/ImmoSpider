@@ -1,17 +1,11 @@
-defaults:
-  environment:
-    - key: PYTHONIOENCODING
-      value: utf-8
-
 jobs:
-  - name: scrapy
-    command: > 
-        scrapy crawl immoscout -o apartments_$(date +"%Y%m%dT%H%M%S").csv 
-        -s FROM=${FROM}
-        -s TO=${TO}
-        -s SENDGRID_API_KEY=${SENDGRID_API_KEY}
-        -s LOG_LEVEL=INFO
-        -a url=${URL}  
-    schedule: "*/10 * * * *"
-    captureStdout: true
-
+  - name: immospider
+    command: curl -H "X-API-KEY: ${env.API_KEY}" ${env.API_URL:-http://127.0.0.1:8000}/trigger
+    schedule: "*/15 * * * *"
+    concurrencyPolicy: Forbid
+    onFailure:
+      report:
+        telegram:
+          token: ${env.TELEGRAM_API_TOKEN}
+          chat_id: ${env.TELEGRAM_CHAT_ID}
+          message: "Spider run failed!"
