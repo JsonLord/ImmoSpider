@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+jupyter = "*"
+scrapy = "*"
+scikit-learn = "*"
+pandas = "*"
+scipy = "*"
+matplotlib = "*"
+seaborn = "*"
+tpot = "*"
+googlemaps = "*"
+yacron = "*"
+python-telegram-bot = "*"
+fastapi = "*"
+gradio = "*"
+requests = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
