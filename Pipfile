@@ -18,6 +18,7 @@ python-telegram-bot = "*"
 fastapi = "*"
 gradio = "*"
 requests = "*"
+uvicorn = "*"
 
 [dev-packages]
 

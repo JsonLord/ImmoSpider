@@ -1,6 +1,6 @@
 jobs:
 - name: immospider
-  command: curl -H "X-API-KEY: ${env.API_KEY}" ${env.API_URL:-http://127.0.0.1:8000}/trigger
+  command: curl -H "X-API-KEY: ${env.API_KEY}" http://127.0.0.1:7860/trigger
   schedule: "*/15 * * * *"
   concurrencyPolicy: Forbid
   onFailure:
@@ -14,12 +14,4 @@ jobs:
       telegram:
         token: ${env.TELEGRAM_API_TOKEN}
         chat_id: ${env.TELEGRAM_CHAT_ID}
-        message: |
-          New apartments found!
-          
-          Basic Info: {item.get('title', 'N/A')} - {item.get('price', 'N/A')} - {item.get('size', 'N/A')}
-          Link: {item.get('url', 'N/A')}
-          
-          Analysis: {item.get('llm_analysis', 'N/A')}
-          
-          Personal Message: {item.get('personalized_message', 'N/A')}
+        message: "Spider run completed successfully! (No item data available for detailed message.)"
