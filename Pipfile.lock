@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "923f01493592864e4b17ce232e135ae146a517101466b11d01e80449b5013b95"
+            "sha256": "5c5bda30831d5b29b0289863fdb15a8a0dbf79200144ac4627fb93691e633238"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1105,14 +1105,6 @@
             ],
             "version": "==4.3.5"
         },
-        "googlemaps": {
-            "hashes": [
-                "sha256:3055fcbb1aa262a9159b589b5e6af762b10e80634ae11c59495bd44867e47d88"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.5'",
-            "version": "==4.10.0"
-        },
         "gradio": {
             "hashes": [
                 "sha256:65bcd9e26e77e9be8d688abdb18351d3f537ed16418c4274a513f280894317ed",
@@ -1246,11 +1238,11 @@
         },
         "huggingface-hub": {
             "hashes": [
-                "sha256:2db69b91877d9d34825f5cd2a63b94f259011a77dcf761b437bf510fbe9522e9",
-                "sha256:7a1d9ec4802e64372d1d152d69fb8e26d943f15a2289096fbc8e09e7b90c21a5"
+                "sha256:289e2a3586fdf01e35882944eaa06fbd57436de24b6e653d1fab248584acd66b",
+                "sha256:763f450169bb05ea3867990e9d3ba9464eb617b874791301dc81be2c6ffb0bf5"
             ],
             "markers": "python_full_version >= '3.9.0'",
-            "version": "==1.2.4"
+            "version": "==1.3.0"
         },
         "idna": {
             "hashes": [
