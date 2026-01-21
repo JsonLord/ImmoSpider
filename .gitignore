@@ -7,4 +7,3 @@ __pycache__/
 .venv
 *.log
 download_secrets.py
-start-local.sh
