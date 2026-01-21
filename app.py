@@ -9,6 +9,8 @@ API_KEY_NAME = "X-API-KEY"
 
 # Function to trigger analysis via API
 def analyze_url_ui(url):
+    if not API_KEY:
+        return "Error: API_KEY is not set. Please set the API_KEY secret in your Hugging Face Space."
     headers = {API_KEY_NAME: API_KEY}
     try:
         response = requests.post(f"{API_URL}/analyze", json={"url": url}, headers=headers)
