@@ -7,7 +7,7 @@ import requests
 import logging
 import telegram
 import json
-from jina_analyzer import get_flat_details
+from firecrawl_analyzer import get_flat_details
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -105,7 +105,7 @@ async def analyze_url(request: AnalyzeRequest, api_key: str = Depends(get_api_ke
         
         flat_description = get_flat_details(request.url)
         if not flat_description:
-            raise HTTPException(status_code=500, detail="Failed to get flat details from Jina.")
+            raise HTTPException(status_code=500, detail="Failed to get flat details from Firecrawl.")
         
         analysis_result = analyze_description(flat_description)
         if "error" in analysis_result:
