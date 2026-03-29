@@ -5,3 +5,5 @@ deploy2aws.sh
 *.pyc
 __pycache__/
 .venv
+*.log
+download_secrets.py
